@@ -10,7 +10,7 @@ function logObject(list, time) {
     return {
         id: list.id,
         name: list.name,
-        time: time
+        time: time / 1000
     }
 }
 
@@ -35,7 +35,18 @@ trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
             });
 
             log.unshift(start)
-            console.log(log)
+
+            var times = {}
+            log.forEach(log => {
+                if(times[log.id] == undefined) {
+                    times[log.id] = {}
+                    times[log.id].time = 0
+                }
+                times[log.id].name = log.name
+                times[log.id].time += log.time
+            })
+
+            console.log(times)
         });
     });
 })
