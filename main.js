@@ -6,17 +6,23 @@ function trelloDate(dateString) {
     return new Date(1000*parseInt(dateString.substring(0,8),16))
 }
 
+function logObject(list, time) {
+    return {
+        id: list.id,
+        name: list.name,
+        time: time
+    }
+}
+
 trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
     cards.forEach(element => {
         trello.makeRequest('get', '/1/cards/' + element.shortLink + '/actions', { webhooks: true })
         .then((activities) => {
             activities = activities.reverse()
             
-            var start = {
-                id: activities[0].data.listBefore.id,
-                name: activities[0].data.listBefore.name,
-                time: trelloDate(activities[0].id) - trelloDate(element.id)
-            }
+            var start = logObject(
+                activities[0].data.listBefore,
+                trelloDate(activities[0].id) - trelloDate(element.id))
 
             var log = activities.map((activity, index) => {
                 if(activity.type == "updateCard") {
@@ -24,7 +30,7 @@ trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
                         nextDate = new Date()
                     else
                         nextDate = trelloDate(activities[index + 1].id)
-                    return {id: activity.data.listAfter.id, name: activity.data.listAfter.name, time: nextDate - trelloDate(activity.id)}
+                    return logObject(activity.data.listAfter, nextDate - trelloDate(activity.id))
                 }
             });
 
