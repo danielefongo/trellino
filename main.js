@@ -12,23 +12,24 @@ trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
         .then((activities) => {
             activities = activities.reverse()
             
-            console.log("Creation Date:" + trelloDate(element.id))
-            console.log(activities[0].data.listBefore)
-            console.log(trelloDate(activities[0].id) - trelloDate(element.id))
-            console.log("----------------------------------------------------------------")
-            
-            activities.forEach((activity, index) => {
+            var start = {
+                id: activities[0].data.listBefore.id,
+                name: activities[0].data.listBefore.name,
+                time: trelloDate(activities[0].id) - trelloDate(element.id)
+            }
+
+            var log = activities.map((activity, index) => {
                 if(activity.type == "updateCard") {
-                    console.log("Activity Date:" + trelloDate(activity.id))
-                    console.log(activity.data.listAfter)
                     if(activities[index + 1] == undefined)
                         nextDate = new Date()
                     else
                         nextDate = trelloDate(activities[index + 1].id)
-                    console.log(nextDate - trelloDate(activity.id))
-                    console.log("----------------------------------------------------------------")
+                    return {id: activity.data.listAfter.id, name: activity.data.listAfter.name, time: nextDate - trelloDate(activity.id)}
                 }
             });
+
+            log.unshift(start)
+            console.log(log)
         });
     });
 })
