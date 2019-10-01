@@ -47,6 +47,16 @@ describe('activities', () => {
     expect(activities.get("oldList")).to.be.equal(2);
   });
 
+  it('get rounded time for unique activity using a never used list', async() => {
+    let creationDate = datePlusSeconds(new Date(), -1);
+    let oneSecondAfterCreationDate = new Date();
+
+    let activities = new Activities(creationDate)
+    
+    activities.add("oldList", "neverSeenList", oneSecondAfterCreationDate)
+    expect(activities.get("neverSeenList")).to.be.equal(0);
+  });
+
   it('get rounded time for the last added activity using actual time', async() => {
     let creationDate = datePlusSeconds(new Date(), -2)
     let oneSecondBeforeNow = datePlusMilliseconds(new Date(), -1400)

@@ -14,6 +14,8 @@ module.exports = function(date) {
     this.add = function(oldList, newList, date) {
         if(this.activities[oldList] == undefined)
             this.activities[oldList] = 0
+        if(this.activities[newList] == undefined)
+            this.activities[newList] = 0
         this.activities[oldList] += __calculate_date(date, this.last_activity_date)
         this.last_activity_date = date
         this.last_activity_list = newList
