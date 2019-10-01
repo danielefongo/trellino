@@ -14,11 +14,25 @@ function logObject(list, time) {
     }
 }
 
+function processArray(items, process) {
+    var todo = items.concat();
+
+    setTimeout(function() {
+        process(todo.shift());
+        if(todo.length > 0) {
+            setTimeout(arguments.callee, 100);
+        }
+    }, 100);
+}
+
 trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
-    cards.forEach(element => {
+    processArray(cards, function(element) {
         trello.makeRequest('get', '/1/cards/' + element.shortLink + '/actions', { webhooks: true })
         .then((activities) => {
             activities = activities.reverse()
+
+            if(activities.length === 0)
+                return
             
             var start = logObject(
                 activities[0].data.listBefore,
