@@ -4,13 +4,22 @@ module.exports = function() {
         
         var currentDate = startDate;
 
-        while (currentDate < endDate) {
+        while (__just_day(currentDate) < __just_day(endDate)) {
             var weekDay = currentDate.getDay();
             if(weekDay != 0 && weekDay != 6)
-                result++;
+                result+=8;
     
             currentDate.setDate(currentDate.getDate() + 1); 
         }
-        return result
+        result += hoursBetween(currentDate, endDate)
+        return Math.floor(result / 8)
     };
+
+    function hoursBetween(startDate, endDate) {
+        return (endDate - startDate) / (1000 * 60 * 60)
+    }
+
+    function __just_day(date) {
+        return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+    }
 }
