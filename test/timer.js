@@ -69,4 +69,14 @@ describe('timer', () => {
 
     expect(time).to.equal(1)
   });
+
+  it('calculate rounded 2 working day with a weekend ', async() => {
+    var start = new Date(Date.UTC(2019, 09, 04, 12));
+    var end = new Date(Date.UTC(2019, 09, 08, 12));
+
+    var timer = new Timer(9, 18)
+    var time = timer.timeBetween(start, end)
+
+    expect(time).to.equal(2)
+  });
 });
