@@ -14,7 +14,7 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate)
     
-    activities.add({listBefore: "oldList", listAfter: "newList"}, oneSecondAfterCreationDate)
+    activities.add("oldList", oneSecondAfterCreationDate)
     expect(activities.get("oldList")).to.be.equal(1);
   });
 
@@ -25,8 +25,8 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate)
     
-    activities.add({listBefore: "oldList", listAfter: "newList"}, oneSecondAfterCreationDate)
-    activities.add({listBefore: "newList", listAfter: "oldList"}, twoSecondAfterCreationDate)
+    activities.add("oldList", oneSecondAfterCreationDate)
+    activities.add("newList", twoSecondAfterCreationDate)
     
     expect(activities.get("oldList")).to.be.equal(1);
     expect(activities.get("newList")).to.be.equal(1);
@@ -40,9 +40,9 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate)
     
-    activities.add({listBefore: "oldList", listAfter: "newList"}, oneSecondAfterCreationDate)
-    activities.add({listBefore: "newList", listAfter: "oldList"}, twoSecondAfterCreationDate)
-    activities.add({listBefore: "oldList", listAfter: "newList"}, threeSecondAfterCreationDate)
+    activities.add("oldList", oneSecondAfterCreationDate)
+    activities.add("newList", twoSecondAfterCreationDate)
+    activities.add("oldList", threeSecondAfterCreationDate)
     
     expect(activities.get("oldList")).to.be.equal(2);
   });
