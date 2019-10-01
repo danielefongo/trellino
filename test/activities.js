@@ -67,7 +67,22 @@ describe('activities', () => {
     activities.add("newList", "oldList", oneSecondBeforeNow)
     
     expect(activities.get("oldList")).to.be.equal(1);
+  });
 
+  it('get all activities', async() => {
+    let creationDate = datePlusSeconds(new Date(), -2)
+    let oneSecondAfterCreationDate = datePlusSeconds(creationDate, 1);
+    let twoSecondAfterCreationDate = datePlusSeconds(creationDate, 2);
+
+    let activities = new Activities(creationDate)
+    
+    activities.add("oldList", "newList", oneSecondAfterCreationDate)
+    activities.add("newList", "oldList", twoSecondAfterCreationDate)
+    
+    expect(activities.getAll()).to.include.deep.members([
+      {id: "oldList", time: 1}, 
+      {id: "newList", time: 1} 
+    ]);
   });
 
   function datePlusSeconds(date, seconds) {

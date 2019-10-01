@@ -20,6 +20,11 @@ module.exports = function(date) {
         this.last_activity_date = date
         this.last_activity_list = newList
     }
+    this.getAll = function() {
+        return Object.keys(this.activities).map(function (key) {
+            return { id: key, time: this.get(key) }
+        }, this);
+    }
 
     __calculate_date = function(newDate, oldDate) {
         return Math.floor((newDate - oldDate) / 1000)
