@@ -1,11 +1,12 @@
-module.exports = function(date) {
+module.exports = function(date, timer) {
+    this.timer = timer
     this.last_activity_date = date;
     this.last_activity_list = undefined;
     this.activities = {}
     
     this.get = function(list) {
         if(list === this.last_activity_list)
-            return __calculate_date(new Date(), this.last_activity_date) + this.activities[list]
+            return this.__calculate_date(new Date(), this.last_activity_date) + this.activities[list]
         if(this.activities[list] !== undefined)
             return this.activities[list]
 
@@ -16,7 +17,7 @@ module.exports = function(date) {
             this.activities[oldList] = 0
         if(this.activities[newList] == undefined)
             this.activities[newList] = 0
-        this.activities[oldList] += __calculate_date(date, this.last_activity_date)
+        this.activities[oldList] += this.__calculate_date(date, this.last_activity_date)
         this.last_activity_date = date
         this.last_activity_list = newList
     }
@@ -25,8 +26,7 @@ module.exports = function(date) {
             return { id: key, time: this.get(key) }
         }, this);
     }
-
-    __calculate_date = function(newDate, oldDate) {
-        return Math.floor((newDate - oldDate) / 1000)
+    this.__calculate_date = function(newDate, oldDate) {
+        return this.timer.timeBetween(oldDate, newDate)
     }
 }

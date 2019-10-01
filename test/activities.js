@@ -1,10 +1,13 @@
 const chai = require('chai');
 const expect = chai.expect;
 const Activities = require('../src/activities.js')
+const FakeTimer = require('./fakeTimer.js')
 
 describe('activities', () => {
+  let timer = new FakeTimer()
+
   it('with zero activity', async() => {
-    let activities = new Activities(new Date())
+    let activities = new Activities(new Date(), timer)
     expect(activities.get("aList")).to.be.empty;
   });
 
@@ -12,7 +15,7 @@ describe('activities', () => {
     let creationDate = new Date()
     let oneSecondAfterCreationDate = datePlusSeconds(creationDate, 1);
 
-    let activities = new Activities(creationDate)
+    let activities = new Activities(creationDate, timer)
     
     activities.add("oldList", "anyList", oneSecondAfterCreationDate)
     expect(activities.get("oldList")).to.be.equal(1);
@@ -23,7 +26,7 @@ describe('activities', () => {
     let oneSecondAfterCreationDate = datePlusSeconds(creationDate, 1);
     let twoSecondAfterCreationDate = datePlusSeconds(creationDate, 2);
 
-    let activities = new Activities(creationDate)
+    let activities = new Activities(creationDate, timer)
     
     activities.add("oldList", "anyList", oneSecondAfterCreationDate)
     activities.add("newList", "anyList", twoSecondAfterCreationDate)
@@ -38,7 +41,7 @@ describe('activities', () => {
     let twoSecondAfterCreationDate = datePlusSeconds(creationDate, 2);
     let threeSecondAfterCreationDate = datePlusSeconds(creationDate, 3);
 
-    let activities = new Activities(creationDate)
+    let activities = new Activities(creationDate, timer)
     
     activities.add("oldList", "anyList", oneSecondAfterCreationDate)
     activities.add("newList", "anyList", twoSecondAfterCreationDate)
@@ -51,7 +54,7 @@ describe('activities', () => {
     let creationDate = datePlusSeconds(new Date(), -1);
     let oneSecondAfterCreationDate = new Date();
 
-    let activities = new Activities(creationDate)
+    let activities = new Activities(creationDate, timer)
     
     activities.add("oldList", "neverSeenList", oneSecondAfterCreationDate)
     expect(activities.get("neverSeenList")).to.be.equal(0);
@@ -61,7 +64,7 @@ describe('activities', () => {
     let creationDate = datePlusSeconds(new Date(), -2)
     let oneSecondBeforeNow = datePlusMilliseconds(new Date(), -1400)
 
-    let activities = new Activities(creationDate)
+    let activities = new Activities(creationDate, timer)
   
     activities.add("oldList", "newList", creationDate)
     activities.add("newList", "oldList", oneSecondBeforeNow)
@@ -74,7 +77,7 @@ describe('activities', () => {
     let oneSecondAfterCreationDate = datePlusSeconds(creationDate, 1);
     let twoSecondAfterCreationDate = datePlusSeconds(creationDate, 2);
 
-    let activities = new Activities(creationDate)
+    let activities = new Activities(creationDate, timer)
     
     activities.add("oldList", "newList", oneSecondAfterCreationDate)
     activities.add("newList", "oldList", twoSecondAfterCreationDate)
