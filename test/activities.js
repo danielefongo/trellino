@@ -47,9 +47,9 @@ describe('activities', () => {
     expect(activities.get("oldList")).to.be.equal(2);
   });
 
-  it('get time for the last added activity using actual time', async() => {
+  it('get rounded time for the last added activity using actual time', async() => {
     let creationDate = datePlusSeconds(new Date(), -2)
-    let oneSecondBeforeNow = datePlusSeconds(new Date(), -1)
+    let oneSecondBeforeNow = datePlusMilliseconds(new Date(), -1400)
 
     let activities = new Activities(creationDate)
   
@@ -57,9 +57,14 @@ describe('activities', () => {
     activities.add("newList", "oldList", oneSecondBeforeNow)
     
     expect(activities.get("oldList")).to.be.equal(1);
+
   });
 
   function datePlusSeconds(date, seconds) {
     return new Date(date.getTime() + seconds * 1000)
+  }
+
+  function datePlusMilliseconds(date, ms) {
+    return new Date(date.getTime() + ms)
   }
 });

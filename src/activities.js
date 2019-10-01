@@ -20,6 +20,6 @@ module.exports = function(date) {
     }
 
     __calculate_date = function(newDate, oldDate) {
-        return (newDate - oldDate) / 1000
+        return Math.floor((newDate - oldDate) / 1000)
     }
 }
