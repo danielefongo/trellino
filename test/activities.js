@@ -14,7 +14,7 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate)
     
-    activities.add("oldList", oneSecondAfterCreationDate)
+    activities.add("oldList", "anyList", oneSecondAfterCreationDate)
     expect(activities.get("oldList")).to.be.equal(1);
   });
 
@@ -25,8 +25,8 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate)
     
-    activities.add("oldList", oneSecondAfterCreationDate)
-    activities.add("newList", twoSecondAfterCreationDate)
+    activities.add("oldList", "anyList", oneSecondAfterCreationDate)
+    activities.add("newList", "anyList", twoSecondAfterCreationDate)
     
     expect(activities.get("oldList")).to.be.equal(1);
     expect(activities.get("newList")).to.be.equal(1);
@@ -40,11 +40,23 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate)
     
-    activities.add("oldList", oneSecondAfterCreationDate)
-    activities.add("newList", twoSecondAfterCreationDate)
-    activities.add("oldList", threeSecondAfterCreationDate)
+    activities.add("oldList", "anyList", oneSecondAfterCreationDate)
+    activities.add("newList", "anyList", twoSecondAfterCreationDate)
+    activities.add("oldList", "anyList", threeSecondAfterCreationDate)
     
     expect(activities.get("oldList")).to.be.equal(2);
+  });
+
+  it('get time for the last added activity using actual time', async() => {
+    let creationDate = datePlusSeconds(new Date(), -2)
+    let oneSecondBeforeNow = datePlusSeconds(new Date(), -1)
+
+    let activities = new Activities(creationDate)
+  
+    activities.add("oldList", "newList", creationDate)
+    activities.add("newList", "oldList", oneSecondBeforeNow)
+    
+    expect(activities.get("oldList")).to.be.equal(1);
   });
 
   function datePlusSeconds(date, seconds) {
