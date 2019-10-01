@@ -13,7 +13,22 @@ describe('activities', () => {
     let oneSecondAfterCreationDate = new Date(creationDate.getTime() + 1000);
 
     let activities = new Activities(creationDate)
+    
     activities.add({listBefore: "oldList", listAfter: "newList"}, oneSecondAfterCreationDate)
     expect(activities.get("oldList")).to.be.equal(1);
+  });
+
+  it('with two activities', async() => {
+    let creationDate = new Date()
+    let oneSecondAfterCreationDate = new Date(creationDate.getTime() + 1000);
+    let twoSecondAfterCreationDate = new Date(creationDate.getTime() + 2000);
+
+    let activities = new Activities(creationDate)
+    
+    activities.add({listBefore: "oldList", listAfter: "newList"}, oneSecondAfterCreationDate)
+    activities.add({listBefore: "newList", listAfter: "oldList"}, twoSecondAfterCreationDate)
+    
+    expect(activities.get("oldList")).to.be.equal(1);
+    expect(activities.get("newList")).to.be.equal(1);
   });
 });
