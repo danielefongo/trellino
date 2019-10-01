@@ -26,26 +26,24 @@ function processArray(items, process) {
 }
 
 trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
-    processArray(cards, function(element) {
-        trello.makeRequest('get', '/1/cards/' + element.shortLink + '/actions', { webhooks: true })
+    processArray(cards, function(card) {
+        trello.makeRequest('get', '/1/cards/' + card.shortLink + '/actions', { webhooks: true })
         .then((activities) => {
-            activities = activities.reverse()
+            activities = activities.reverse().filter((activity) => activity.type == "updateCard")
 
             if(activities.length === 0)
                 return
             
             var start = logObject(
                 activities[0].data.listBefore,
-                trelloDate(activities[0].id) - trelloDate(element.id))
+                trelloDate(activities[0].id) - trelloDate(card.id))
 
             var log = activities.map((activity, index) => {
-                if(activity.type == "updateCard") {
-                    if(activities[index + 1] == undefined)
-                        nextDate = new Date()
-                    else
-                        nextDate = trelloDate(activities[index + 1].id)
-                    return logObject(activity.data.listAfter, nextDate - trelloDate(activity.id))
-                }
+                if(activities[index + 1] == undefined)
+                    nextDate = new Date()
+                else
+                    nextDate = trelloDate(activities[index + 1].id)
+                return logObject(activity.data.listAfter, nextDate - trelloDate(activity.id))
             });
 
             log.unshift(start)
@@ -60,6 +58,7 @@ trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
                 times[log.id].time += log.time
             })
 
+            console.log("Card #" + card.idShort)
             console.log(times)
         });
     });
