@@ -6,21 +6,20 @@ module.exports = function(startHour, endHour) {
         var currentDate = startDate;
 
         while (just_day(currentDate) < just_day(endDate)) {
-            if(is_working_day(currentDate)) {
-                result += calculate_hours(currentDate.getUTCHours(), endHour)
-            }
-            currentDate.setDate(currentDate.getDate() + 1); 
+            result += calculate_hours(currentDate, endHour)
+            currentDate.setUTCDate(currentDate.getUTCDate() + 1); 
             currentDate.setUTCHours(startHour); 
         }
-        if(is_working_day(currentDate)) {
-            result += calculate_hours(currentDate.getUTCHours(), endDate.getUTCHours())
-        }
+        result += calculate_hours(currentDate, endDate.getUTCHours())
+        
         return Math.floor(result / this.dayLength)
     };
 
-    function calculate_hours(first, last) {
-        if(first < last)
-            return last - first
+    function calculate_hours(date, lastHour) {
+        var actualHour = date.getUTCHours()
+        
+        if(is_working_day(date) && actualHour < lastHour)
+            return lastHour - actualHour
         return 0
     }
 
