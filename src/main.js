@@ -45,10 +45,10 @@ async function cardInfo(card) {
         
         var log = new Activities(trelloDate(card.id), timer)
 
-        if(activities.length === 0) return
-
-        for(var i = 0; i < activities.length; i++) {
-            log.add(activities[i].data.listBefore, activities[i].data.listAfter, trelloDate(activities[i].id))
+        if(activities.length > 0) {
+            for(var i = 0; i < activities.length; i++) {
+                log.add(activities[i].data.listBefore, activities[i].data.listAfter, trelloDate(activities[i].id))
+            }
         }
     
         return {
