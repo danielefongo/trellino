@@ -6,9 +6,11 @@ const FakeTimer = require('./fakeTimer.js')
 describe('activities', () => {
   let timer = new FakeTimer()
 
+  function list(id) { return {id: id, name: "anyName" }}
+
   it('with zero activity', async() => {
     let activities = new Activities(new Date(), timer)
-    expect(activities.get("aList")).to.be.empty;
+    expect(activities.get("aList")).to.be.equal("{}");
   });
 
   it('with one activity', async() => {
@@ -17,8 +19,8 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate, timer)
     
-    activities.add("oldList", "anyList", oneSecondAfterCreationDate)
-    expect(activities.get("oldList")).to.be.equal(1);
+    activities.add(list("oldList"), list("anyList"), oneSecondAfterCreationDate)
+    expect(activities.get("oldList").time).to.be.equal(1);
   });
 
   it('with two activities', async() => {
@@ -28,11 +30,11 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate, timer)
     
-    activities.add("oldList", "anyList", oneSecondAfterCreationDate)
-    activities.add("newList", "anyList", twoSecondAfterCreationDate)
+    activities.add(list("oldList"), list("anyList"), oneSecondAfterCreationDate)
+    activities.add(list("newList"), list("anyList"), twoSecondAfterCreationDate)
     
-    expect(activities.get("oldList")).to.be.equal(1);
-    expect(activities.get("newList")).to.be.equal(1);
+    expect(activities.get("oldList").time).to.be.equal(1);
+    expect(activities.get("newList").time).to.be.equal(1);
   });
 
   it('update activity by adding time', async() => {
@@ -43,11 +45,11 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate, timer)
     
-    activities.add("oldList", "anyList", oneSecondAfterCreationDate)
-    activities.add("newList", "anyList", twoSecondAfterCreationDate)
-    activities.add("oldList", "anyList", threeSecondAfterCreationDate)
+    activities.add(list("oldList"), list("anyList"), oneSecondAfterCreationDate)
+    activities.add(list("newList"), list("anyList"), twoSecondAfterCreationDate)
+    activities.add(list("oldList"), list("anyList"), threeSecondAfterCreationDate)
     
-    expect(activities.get("oldList")).to.be.equal(2);
+    expect(activities.get("oldList").time).to.be.equal(2);
   });
 
   it('get rounded time for unique activity using a never used list', async() => {
@@ -56,8 +58,8 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate, timer)
     
-    activities.add("oldList", "neverSeenList", oneSecondAfterCreationDate)
-    expect(activities.get("neverSeenList")).to.be.equal(0);
+    activities.add(list("oldList"), list("neverSeenList"), oneSecondAfterCreationDate)
+    expect(activities.get("neverSeenList").time).to.be.equal(0);
   });
 
   it('get rounded time for the last added activity using actual time', async() => {
@@ -66,10 +68,10 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate, timer)
   
-    activities.add("oldList", "newList", creationDate)
-    activities.add("newList", "oldList", oneSecondBeforeNow)
+    activities.add(list("oldList"), list("newList"), creationDate)
+    activities.add(list("newList"), list("oldList"), oneSecondBeforeNow)
     
-    expect(activities.get("oldList")).to.be.equal(1);
+    expect(activities.get("oldList").time).to.be.equal(1);
   });
 
   it('get all activities', async() => {
@@ -79,12 +81,12 @@ describe('activities', () => {
 
     let activities = new Activities(creationDate, timer)
     
-    activities.add("oldList", "newList", oneSecondAfterCreationDate)
-    activities.add("newList", "oldList", twoSecondAfterCreationDate)
+    activities.add(list("oldList"), list("newList"), oneSecondAfterCreationDate)
+    activities.add(list("newList"), list("oldList"), twoSecondAfterCreationDate)
     
     expect(activities.getAll()).to.include.deep.members([
-      {id: "oldList", time: 1}, 
-      {id: "newList", time: 1} 
+      {id: "oldList", name: "anyName", time: 1}, 
+      {id: "newList", name: "anyName", time: 1} 
     ]);
   });
 

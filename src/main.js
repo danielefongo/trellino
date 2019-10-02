@@ -32,7 +32,7 @@ trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
             return
 
             for(var i = 0; i < activities.length; i++) {
-                log.add(activities[i].data.listBefore.id, activities[i].data.listAfter.id, trelloDate(activities[i].id))
+                log.add(activities[i].data.listBefore, activities[i].data.listAfter, trelloDate(activities[i].id))
             }
         
             console.log("Card #" + card.idShort)
