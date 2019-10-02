@@ -48,4 +48,11 @@ function printBoardActivities(boardId) {
     })
 }
 
+function printCardActivities(cardId) {
+    trello.makeRequest('get', '/1/cards/' + cardId)
+    .then((card) => {
+        printActivitiesFor(card)
+    })
+}
+
 printBoardActivities(process.env.BOARD_ID)
