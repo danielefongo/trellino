@@ -29,7 +29,8 @@ app.get('/board', async function(req, res) {
         return cards.map(function(card) {
             return {
                 shortId: card.shortLink,
-                name: card.name
+                name: card.name,
+                labels: getLabels(card)
             }
         })
     })
@@ -61,4 +62,8 @@ async function cardInfo(card) {
 
 function trelloDate(dateString) {
     return new Date(1000*parseInt(dateString.substring(0,8),16))
+}
+
+function getLabels(card) {
+    return card.labels.map(label => label.name)
 }
