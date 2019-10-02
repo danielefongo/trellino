@@ -73,6 +73,21 @@ describe('activities', () => {
     
     expect(activities.get("oldList").time).to.be.equal(1);
   });
+  
+  it('get properly formed activities', async() => {
+    let oneSecondAfterCreationDate = new Date();
+    let creationDate = datePlusSeconds(oneSecondAfterCreationDate, -1)
+
+    let activities = new Activities(creationDate, timer)
+    
+    activities.add(list("oldList"), list("newList"), oneSecondAfterCreationDate)
+    expect(activities.get("oldList").time).to.be.equal(1);
+    expect(activities.get("oldList").id).to.be.equal("oldList");
+    expect(activities.get("oldList").name).to.be.equal("anyName");
+    expect(activities.get("newList").time).to.be.equal(0);
+    expect(activities.get("newList").id).to.be.equal("newList");
+    expect(activities.get("newList").name).to.be.equal("anyName");
+  });
 
   it('get all activities', async() => {
     let creationDate = datePlusSeconds(new Date(), -2)
