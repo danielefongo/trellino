@@ -20,9 +20,8 @@ function processArray(items, process) {
     }, 100);
 }
 
-trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
-    processArray(cards, function(card) {
-        trello.makeRequest('get', '/1/cards/' + card.shortLink + '/actions', { webhooks: true })
+function printActivitiesFor(card) {
+    trello.makeRequest('get', '/1/cards/' + card.shortLink + '/actions', { webhooks: true })
         .then((activities) => {
             activities = activities.reverse().filter((activity) => activity.type == "updateCard")
             
@@ -39,5 +38,14 @@ trello.getCardsOnBoard(process.env.BOARD_ID).then((cards) => {
             console.log("Card name: " + card.name)
             console.log(log.getAll())
         });
-    });
-})
+}
+
+function printBoardActivities(boardId) {
+    trello.getCardsOnBoard(boardId).then((cards) => {
+        processArray(cards, function(card) {
+            printActivitiesFor(card)
+        });
+    })
+}
+
+printBoardActivities(process.env.BOARD_ID)
