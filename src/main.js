@@ -25,7 +25,7 @@ app.get('/card', async function(req, res) {
 app.get('/board', async function(req, res) {
     var boardId = req.param('id');
 
-    var cardActivities = await trello.getCardsOnBoard(boardId).then((cards) => {
+    var cardActivities = await trello.makeRequest('get', "/1/boards/" + boardId + "/cards/all").then((cards) => {
         return cards.map(function(card) {
             return {
                 shortId: card.shortLink,
