@@ -54,6 +54,7 @@ async function cardInfo(card) {
         return {
             id: card.idShort,
             name: card.name,
+            labels: getLabels(card),
             activities: log.getAll()
         };
     });
