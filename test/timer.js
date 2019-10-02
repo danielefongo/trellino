@@ -1,82 +1,73 @@
 const chai = require('chai');
 const expect = chai.expect;
 const Timer = require('../src/timer.js')
+const Hours = require('../src/hours.js')
 
 describe('timer', () => {
-  it('calculate 0 working days', async() => {
-      var timer = new Timer(9, 18)
+  it('calculate 0 working hours', async() => {
+      var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
       var time = timer.timeBetween(new Date(), new Date())
 
       expect(time).to.equal(0)
   });
 
-  it('calculate 1 working day during week', async() => {
-    var start = new Date(Date.UTC(2019, 09, 01, 10));
-    var end = new Date(Date.UTC(2019, 09, 02, 10));
-
-    var timer = new Timer(9, 18)
-    var time = timer.timeBetween(start, end)
-
-    expect(time).to.equal(1)
-  });
-
-  it('calculate multiple working days during week', async() => {
-    var start = new Date(Date.UTC(2019, 09, 01, 10));
-    var end = new Date(Date.UTC(2019, 09, 03, 10));
-
-    var timer = new Timer(9, 18)
-    var time = timer.timeBetween(start, end)
-
-    expect(time).to.equal(2)
-  });
-
-  it('calculate 2 working day between friday and tuesday', async() => {
-    var start = new Date(Date.UTC(2019, 09, 04, 10));
-    var end = new Date(Date.UTC(2019, 09, 08, 10));
-
-    var timer = new Timer(9, 18)
-    var time = timer.timeBetween(start, end)
-
-    expect(time).to.equal(2)
-  });
-
-  it('calculate 1 full working day using effective hours', async() => {
+  it('calculate 8 hours for 1 working day during week', async() => {
     var start = new Date(Date.UTC(2019, 09, 01, 09));
     var end = new Date(Date.UTC(2019, 09, 01, 18));
 
-    var timer = new Timer(9, 18)
+    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
     var time = timer.timeBetween(start, end)
 
-    expect(time).to.equal(1)
+    expect(time).to.equal(8)
   });
 
-  it('calculate rounded 0 working day using effective hours', async() => {
+  it('calculate 16 hours for 2 working days during week', async() => {
+    var start = new Date(Date.UTC(2019, 09, 01, 09));
+    var end = new Date(Date.UTC(2019, 09, 02, 18));
+
+    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
+    var time = timer.timeBetween(start, end)
+
+    expect(time).to.equal(16)
+  });
+
+  it('calculate 16 hours for 2 working day between friday and tuesday', async() => {
+    var start = new Date(Date.UTC(2019, 09, 04, 09));
+    var end = new Date(Date.UTC(2019, 09, 07, 18));
+
+    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
+    var time = timer.timeBetween(start, end)
+
+    expect(time).to.equal(16)
+  });
+
+  it('calculate 3 working hours using', async() => {
     var start = new Date(Date.UTC(2019, 09, 01, 09));
     var end = new Date(Date.UTC(2019, 09, 01, 12));
 
-    var timer = new Timer(9, 18)
+    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
     var time = timer.timeBetween(start, end)
 
-    expect(time).to.equal(0)
+    expect(time).to.equal(3)
   });
 
-  it('calculate rounded 1 working day between two working days', async() => {
+  it('calculate 8 hours between two working days', async() => {
     var start = new Date(Date.UTC(2019, 09, 01, 12));
     var end = new Date(Date.UTC(2019, 09, 02, 12));
 
-    var timer = new Timer(9, 18)
+    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
     var time = timer.timeBetween(start, end)
 
-    expect(time).to.equal(1)
+    expect(time).to.equal(8)
   });
 
-  it('calculate rounded 2 working day with a weekend ', async() => {
+  it('calculate 8 hours with a weekend between', async() => {
     var start = new Date(Date.UTC(2019, 09, 04, 12));
-    var end = new Date(Date.UTC(2019, 09, 08, 12));
+    var end = new Date(Date.UTC(2019, 09, 07, 12));
 
-    var timer = new Timer(9, 18)
+    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
     var time = timer.timeBetween(start, end)
 
-    expect(time).to.equal(2)
+    expect(time).to.equal(8)
   });
 });

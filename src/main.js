@@ -2,8 +2,9 @@ require('dotenv').config()
 var Trello = require("trello");
 const Activities = require("./activities.js");
 const Timer = require("./timer.js");
+const Hours = require("./hours.js");
 var trello = new Trello(process.env.API_KEY, process.env.API_TOKEN);
-var timer = new Timer(8, 17)
+var timer = new Timer(new Hours(8, 13), new Hours(14, 17))
 
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 var express = require('express');
