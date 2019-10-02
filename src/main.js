@@ -5,54 +5,46 @@ const Timer = require("./timer.js");
 var trello = new Trello(process.env.API_KEY, process.env.API_TOKEN);
 var timer = new Timer(8, 17)
 
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
+var express = require('express');
+var app = express();
+var port = process.env.PORT || 8080;
+app.listen(port);
+
+app.get('/card', async function(req, res) {
+    var cardId = req.param('id');
+
+    var cardActivities = await trello.makeRequest('get', '/1/cards/' + cardId)
+    .then((card) => {
+        return cardInfo(card)
+    })
+    
+    res.send(cardActivities)
+});
+
+async function cardInfo(card) {
+    result = await trello.makeRequest('get', '/1/cards/' + card.shortLink + '/actions', { webhooks: true })
+    .then((activities) => {
+        activities = activities.reverse().filter((activity) => activity.type == "updateCard")
+        
+        var log = new Activities(trelloDate(card.id), timer)
+
+        if(activities.length === 0)
+        return
+
+        for(var i = 0; i < activities.length; i++) {
+            log.add(activities[i].data.listBefore, activities[i].data.listAfter, trelloDate(activities[i].id))
+        }
+    
+        return {
+            id: card.idShort,
+            name: card.name,
+            activities: log.getAll()
+        };
+    });
+    return result;
+}
+
 function trelloDate(dateString) {
     return new Date(1000*parseInt(dateString.substring(0,8),16))
 }
-
-function processArray(items, process) {
-    var todo = items.concat();
-
-    setTimeout(function() {
-        process(todo.shift());
-        if(todo.length > 0) {
-            setTimeout(arguments.callee, 100);
-        }
-    }, 100);
-}
-
-function printActivitiesFor(card) {
-    trello.makeRequest('get', '/1/cards/' + card.shortLink + '/actions', { webhooks: true })
-        .then((activities) => {
-            activities = activities.reverse().filter((activity) => activity.type == "updateCard")
-            
-            var log = new Activities(trelloDate(card.id), timer)
-
-            if(activities.length === 0)
-            return
-
-            for(var i = 0; i < activities.length; i++) {
-                log.add(activities[i].data.listBefore, activities[i].data.listAfter, trelloDate(activities[i].id))
-            }
-        
-            console.log("Card #" + card.idShort)
-            console.log("Card name: " + card.name)
-            console.log(log.getAll())
-        });
-}
-
-function printBoardActivities(boardId) {
-    trello.getCardsOnBoard(boardId).then((cards) => {
-        processArray(cards, function(card) {
-            printActivitiesFor(card)
-        });
-    })
-}
-
-function printCardActivities(cardId) {
-    trello.makeRequest('get', '/1/cards/' + cardId)
-    .then((card) => {
-        printActivitiesFor(card)
-    })
-}
-
-printBoardActivities(process.env.BOARD_ID)
