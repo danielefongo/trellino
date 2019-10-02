@@ -16,13 +16,12 @@ module.exports = function(date, timer) {
         return this.activities[listId]
     }
     this.add = function(oldList, newList, date) {
-        if(this.activities[oldList.id] == undefined)
-            this.activities[oldList.id] = new Activity(oldList.id, oldList.name)
-        if(this.activities[newList.id] == undefined)
-            this.activities[newList.id] = new Activity(newList.id, newList.name)
+        this.__initialize_activity(oldList)
+        this.__initialize_activity(newList)
+
         this.activities[oldList.id].time += this.__calculate_date(date, this.last_activity_date)
         this.last_activity_date = date
-        this.last_activity = new Activity(newList.id, newList.name)
+        this.last_activity = this.__create_activity_from(newList)
     }
     this.getAll = function() {
         return Object.keys(this.activities).map(function (key) {
@@ -31,5 +30,12 @@ module.exports = function(date, timer) {
     }
     this.__calculate_date = function(newDate, oldDate) {
         return this.timer.timeBetween(oldDate, newDate)
+    }
+    this.__initialize_activity = function(list) {
+        if(this.activities[list.id] == undefined)
+            this.activities[list.id] = this.__create_activity_from(list)
+    }
+    this.__create_activity_from = function(list) {
+        return new Activity(list.id, list.name)
     }
 }
