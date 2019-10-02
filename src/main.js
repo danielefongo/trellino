@@ -22,6 +22,21 @@ app.get('/card', async function(req, res) {
     res.send(cardActivities)
 });
 
+app.get('/board', async function(req, res) {
+    var boardId = req.param('id');
+
+    var cardActivities = await trello.getCardsOnBoard(boardId).then((cards) => {
+        return cards.map(function(card) {
+            return {
+                shortId: card.shortLink,
+                name: card.name
+            }
+        })
+    })
+    
+    res.send(cardActivities)
+});
+
 async function cardInfo(card) {
     result = await trello.makeRequest('get', '/1/cards/' + card.shortLink + '/actions', { webhooks: true })
     .then((activities) => {
@@ -29,8 +44,7 @@ async function cardInfo(card) {
         
         var log = new Activities(trelloDate(card.id), timer)
 
-        if(activities.length === 0)
-        return
+        if(activities.length === 0) return
 
         for(var i = 0; i < activities.length; i++) {
             log.add(activities[i].data.listBefore, activities[i].data.listAfter, trelloDate(activities[i].id))
