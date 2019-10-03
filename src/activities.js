@@ -15,6 +15,7 @@ module.exports = function(date, timer) {
         }
         return this.activities[listId]
     }
+
     this.add = function(oldList, newList, date) {
         this.__initialize_activity(oldList)
         this.__initialize_activity(newList)
@@ -23,18 +24,22 @@ module.exports = function(date, timer) {
         this.last_activity_date = date
         this.last_activity = this.__create_activity_from(newList)
     }
+
     this.getAll = function() {
         return Object.keys(this.activities).map(function (key) {
             return this.get(key)
         }, this);
     }
+
     this.__calculate_date = function(newDate, oldDate) {
         return this.timer.timeBetween(oldDate, newDate)
     }
+
     this.__initialize_activity = function(list) {
         if(this.activities[list.id] == undefined)
             this.activities[list.id] = this.__create_activity_from(list)
     }
+
     this.__create_activity_from = function(list) {
         return new Activity(list.id, list.name)
     }

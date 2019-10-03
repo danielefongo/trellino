@@ -1,15 +1,15 @@
-require('dotenv').config()
-var Trello = require("trello");
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
+const express = require('express');
+const Trello = require("trello");
 const Activities = require("./activities.js");
 const Timer = require("./timer.js");
 const Hours = require("./hours.js");
+
 var trello = new Trello(process.env.API_KEY, process.env.API_TOKEN);
 var timer = new Timer(new Hours(8, 13), new Hours(14, 17))
-
-if (process.env.NODE_ENV !== 'production') require('dotenv').config()
-var express = require('express');
 var app = express();
 var port = process.env.PORT || 8080;
+
 app.listen(port);
 
 app.get('/card', async function(req, res) {

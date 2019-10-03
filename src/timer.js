@@ -1,5 +1,4 @@
 module.exports = function(morningHours, eveningHours) {
-    this
     this.timeBetween = function(startDate, endDate) {
         var result = 0
         
