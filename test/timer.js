@@ -1,11 +1,11 @@
 const chai = require('chai');
 const expect = chai.expect;
 const Timer = require('../src/timer.js')
-const Hours = require('../src/hours.js')
+const UtcHoursInterval = require('../src/utcHoursInterval.js')
 
 describe('timer', () => {
   it('calculate 0 working hours', async() => {
-      var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
+      var timer = new Timer(new UtcHoursInterval(9, 13), new UtcHoursInterval(14, 18))
       var time = timer.timeBetween(new Date(), new Date())
 
       expect(time).to.equal(0)
@@ -15,7 +15,7 @@ describe('timer', () => {
     var start = new Date(Date.UTC(2019, 09, 01, 09));
     var end = new Date(Date.UTC(2019, 09, 01, 18));
 
-    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
+    var timer = new Timer(new UtcHoursInterval(9, 13), new UtcHoursInterval(14, 18))
     var time = timer.timeBetween(start, end)
 
     expect(time).to.equal(8)
@@ -25,7 +25,7 @@ describe('timer', () => {
     var start = new Date(Date.UTC(2019, 09, 01, 09));
     var end = new Date(Date.UTC(2019, 09, 02, 18));
 
-    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
+    var timer = new Timer(new UtcHoursInterval(9, 13), new UtcHoursInterval(14, 18))
     var time = timer.timeBetween(start, end)
 
     expect(time).to.equal(16)
@@ -35,7 +35,7 @@ describe('timer', () => {
     var start = new Date(Date.UTC(2019, 09, 04, 09));
     var end = new Date(Date.UTC(2019, 09, 07, 18));
 
-    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
+    var timer = new Timer(new UtcHoursInterval(9, 13), new UtcHoursInterval(14, 18))
     var time = timer.timeBetween(start, end)
 
     expect(time).to.equal(16)
@@ -45,7 +45,7 @@ describe('timer', () => {
     var start = new Date(Date.UTC(2019, 09, 01, 09));
     var end = new Date(Date.UTC(2019, 09, 01, 12));
 
-    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
+    var timer = new Timer(new UtcHoursInterval(9, 13), new UtcHoursInterval(14, 18))
     var time = timer.timeBetween(start, end)
 
     expect(time).to.equal(3)
@@ -55,7 +55,7 @@ describe('timer', () => {
     var start = new Date(Date.UTC(2019, 09, 01, 12));
     var end = new Date(Date.UTC(2019, 09, 02, 12));
 
-    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
+    var timer = new Timer(new UtcHoursInterval(9, 13), new UtcHoursInterval(14, 18))
     var time = timer.timeBetween(start, end)
 
     expect(time).to.equal(8)
@@ -65,7 +65,7 @@ describe('timer', () => {
     var start = new Date(Date.UTC(2019, 09, 04, 12));
     var end = new Date(Date.UTC(2019, 09, 07, 12));
 
-    var timer = new Timer(new Hours(9, 13), new Hours(14, 18))
+    var timer = new Timer(new UtcHoursInterval(9, 13), new UtcHoursInterval(14, 18))
     var time = timer.timeBetween(start, end)
 
     expect(time).to.equal(8)

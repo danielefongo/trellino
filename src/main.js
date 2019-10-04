@@ -3,10 +3,10 @@ const express = require('express');
 const Trello = require("trello");
 const Activities = require("./activities.js");
 const Timer = require("./timer.js");
-const Hours = require("./hours.js");
+const UtcHoursInterval = require("./utcHoursInterval.js");
 
 var trello = new Trello(process.env.API_KEY, process.env.API_TOKEN);
-var timer = new Timer(new Hours(8, 13), new Hours(14, 17))
+var timer = new Timer(new UtcHoursInterval(7, 11), new UtcHoursInterval(12, 16))
 var app = express();
 var port = process.env.PORT || 8080;
 
