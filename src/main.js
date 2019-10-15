@@ -17,7 +17,8 @@ app.get('/card', async function(req, res) {
 
     var card = await trello.card(cardId)
     var activities = await trello.activities(cardId)
-    var report = generateReport(card, activities)
+    var actualList = await trello.list(card.idList)
+    var report = generateReport(card, activities, actualList)
     
     res.send(report)
 });
@@ -31,10 +32,10 @@ app.get('/board', async function(req, res) {
     res.send(cards)
 });
 
-function generateReport(card, activities) {
+function generateReport(card, activities, actualList) {
     activities = activities.reverse().filter((activity) => activity.type == "updateCard")
     
-    var log = new Activities(trello.dateFrom(card.id), timer)
+    var log = new Activities(trello.dateFrom(card.id), timer, actualList)
 
     if(activities.length > 0) {
         for(var i = 0; i < activities.length; i++) {

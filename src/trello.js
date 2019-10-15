@@ -5,6 +5,9 @@ module.exports = function(key, token) {
     this.cards = async function(boardId) {
         return await this.__callApi('/1/boards/' + boardId + '/cards/all')
     }
+    this.list = async function(listId) {
+        return await this.__callApi('/1/lists/' + listId)
+    }
     this.card = async function(cardId) {
         return await this.__callApi('/1/cards/' + cardId)
     }

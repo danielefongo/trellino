@@ -1,14 +1,12 @@
 const Activity = require('./activity.js')
 
-module.exports = function(date, timer) {
+module.exports = function(date, timer, actual_list) {
     this.timer = timer
     this.last_activity_date = date;
-    this.last_activity = undefined;
+    this.last_activity = actual_list;
     this.activities = {}
     
     this.get = function(listId) { 
-        if(this.activities[listId] == undefined)
-            return "{}"
         if(listId === this.last_activity.id) {
             this.last_activity.time = this.__calculate_date(new Date(), this.last_activity_date) + this.activities[listId].time
             return this.last_activity
@@ -43,4 +41,6 @@ module.exports = function(date, timer) {
     this.__create_activity_from = function(list) {
         return new Activity(list.id, list.name)
     }
+
+    this.add(actual_list, actual_list, date)
 }
