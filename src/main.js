@@ -1,6 +1,7 @@
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 const express = require('express');
 const Activities = require("./activities.js");
+const Activity = require("./activity.js");
 const Timer = require("./timer.js");
 const Trello = require("./trello.js");
 const UtcHoursInterval = require("./utcHoursInterval.js");
@@ -16,9 +17,10 @@ app.get('/card', async function(req, res) {
     var cardId = req.param('id');
 
     var card = await trello.card(cardId)
+    var orderedList = await trello.lists(card.idBoard)
     var activities = await trello.activities(cardId)
     var actualList = await trello.list(card.idList)
-    var report = generateReport(card, activities, actualList)
+    var report = generateReport(card, activities, orderedList, actualList)
     
     res.send(report)
 });
@@ -32,22 +34,28 @@ app.get('/board', async function(req, res) {
     res.send(cards)
 });
 
-function generateReport(card, activities, actualList) {
-    activities = activities.reverse().filter((activity) => activity.type == "updateCard")
+function generateReport(card, trelloActivities, orderedList, actualList) {
+    trelloActivities = trelloActivities.reverse().filter((activity) => activity.type == "updateCard")
     
-    var log = new Activities(trello.dateFrom(card.id), timer, actualList)
+    var activities = new Activities(trello.dateFrom(card.id), timer, actualList)
 
-    if(activities.length > 0) {
-        for(var i = 0; i < activities.length; i++) {
-            log.add(activities[i].data.listBefore, activities[i].data.listAfter, trello.dateFrom(activities[i].id))
-        }
+    for(var i = 0; i < trelloActivities.length; i++) {
+        activities.add(trelloActivities[i].data.listBefore, trelloActivities[i].data.listAfter, trello.dateFrom(trelloActivities[i].id))
     }
+
+    not_sorted_activities = activities.getAll()
+    sorted_activities = orderedList.map(list => {
+        data = not_sorted_activities.filter(activity => activity.id == list.id)[0]
+        if (data == null)
+            data = new Activity(list.id, list.name)
+        return data
+    })
 
     return {
         id: card.idShort,
         name: card.name,
         labels: getLabels(card),
-        activities: log.getAll()
+        activities: sorted_activities
     };
 }
 
