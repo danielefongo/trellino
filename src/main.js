@@ -15,51 +15,52 @@ app.listen(port);
 app.get('/card', async function(req, res) {
     var cardId = req.param('id');
 
-    var cardActivities = await trello.makeRequest('get', '/1/cards/' + cardId)
-    .then((card) => {
-        return cardInfo(card)
-    })
+    var card = await callApi('/1/cards/' + cardId)
+    var cardActivities = await callApi('/1/cards/' + card.shortLink + '/actions')
+    var report = generateReport(card, cardActivities)
     
-    res.send(cardActivities)
+    res.send(report)
 });
 
 app.get('/board', async function(req, res) {
     var boardId = req.param('id');
 
-    var cardActivities = await trello.makeRequest('get', "/1/boards/" + boardId + "/cards/all").then((cards) => {
-        return cards.map(function(card) {
-            return {
-                shortId: card.shortLink,
-                name: card.name,
-                labels: getLabels(card)
-            }
-        })
+    var trelloCards = await callApi("/1/boards/" + boardId + "/cards/all")
+    var cards = trelloCards.map(card => {
+        return {
+            shortId: card.shortLink,
+            name: card.name,
+            labels: getLabels(card)
+        }
     })
     
-    res.send(cardActivities)
+    res.send(cards)
 });
 
-async function cardInfo(card) {
-    result = await trello.makeRequest('get', '/1/cards/' + card.shortLink + '/actions', { webhooks: true })
-    .then((activities) => {
-        activities = activities.reverse().filter((activity) => activity.type == "updateCard")
-        
-        var log = new Activities(trelloDate(card.id), timer)
+async function callApi(path) {
+    return await trello.makeRequest('get', path)
+    .then((data) => {
+        return data
+    })
+}
 
-        if(activities.length > 0) {
-            for(var i = 0; i < activities.length; i++) {
-                log.add(activities[i].data.listBefore, activities[i].data.listAfter, trelloDate(activities[i].id))
-            }
-        }
+function generateReport(card, activities) {
+    activities = activities.reverse().filter((activity) => activity.type == "updateCard")
     
-        return {
-            id: card.idShort,
-            name: card.name,
-            labels: getLabels(card),
-            activities: log.getAll()
-        };
-    });
-    return result;
+    var log = new Activities(trelloDate(card.id), timer)
+
+    if(activities.length > 0) {
+        for(var i = 0; i < activities.length; i++) {
+            log.add(activities[i].data.listBefore, activities[i].data.listAfter, trelloDate(activities[i].id))
+        }
+    }
+
+    return {
+        id: card.idShort,
+        name: card.name,
+        labels: getLabels(card),
+        activities: log.getAll()
+    };
 }
 
 function trelloDate(dateString) {
