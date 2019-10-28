@@ -13,7 +13,7 @@ var port = process.env.PORT || 8080;
 
 app.listen(port);
 
-app.get('/card', async function(req, res) {
+app.get('/cards/:id', async function(req, res) {
     var cardId = req.param('id');
 
     var card = await trello.card(cardId)
@@ -25,7 +25,7 @@ app.get('/card', async function(req, res) {
     res.send(report)
 });
 
-app.get('/board', async function(req, res) {
+app.get('/boards/:id', async function(req, res) {
     var boardId = req.param('id');
 
     var trelloCards = await trello.cards(boardId)
@@ -63,6 +63,7 @@ function mapCards(trelloCards) {
     return trelloCards.map(card => {
         return {
             shortId: card.shortLink,
+            number: card.idShort,
             name: card.name,
             labels: getLabels(card)
         }
