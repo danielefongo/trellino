@@ -49,7 +49,7 @@ function generateReport(card, trelloActivities, orderedList, actualList) {
         if (data == null)
             data = new Activity(list.id, list.name)
         return data
-    })
+    }).filter(list => list.time > 0)
 
     return {
         id: card.idShort,
